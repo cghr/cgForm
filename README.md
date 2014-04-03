@@ -18,7 +18,7 @@ angular.module('myModule', ['cgForm']);
 
 Project files are also available through your favourite package manager:
 
-**Bower**: `bower install cgForm
+**Bower**: `bower install cg-form
 
 
 ## Supported browsers
