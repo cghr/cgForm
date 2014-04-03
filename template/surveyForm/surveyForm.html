@@ -1,0 +1,19 @@
+<form  class="well" ng-enter="showNext()">
+    <div ng-repeat="element in flow.properties">
+        <form-element config="{{element}}" ></form-element>
+    </div>
+
+    <div class="">
+        <div class="control-label"><label></label></div>
+
+        <div class="controls">
+            <a class="btn btn-small btn-primary" ng-click="showNext()">Next &#187;</a>
+        </div>
+
+    </div>
+</form>
+
+
+
+
+

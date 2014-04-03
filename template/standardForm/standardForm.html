@@ -1,0 +1,16 @@
+<form ng-submit="onSubmit(data)" action="javascript:void(0)" class="well" xmlns="http://www.w3.org/1999/html">
+    <div ng-repeat="element in schema.properties">
+        <form-element config="{{element}}"></form-element>
+    </div>
+
+    <div class="controls">
+        <button class="btn btn-small btn-primary"
+                type="submit" data-plus-as-tab="false">Save
+        </button>
+    </div>
+</form>
+
+
+
+
+

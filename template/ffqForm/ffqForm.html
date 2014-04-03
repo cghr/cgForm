@@ -1,0 +1,88 @@
+<form ng-submit="onSubmit(data)" action="javascript:void(0)" class="well">
+
+    <input ng-repeat="elm in schema.hiddenElements" type="hidden" id="{{elm.name}}" name="{{elm.name}}" value="{{elm.value}}" ng-model="data[elm.name]"/>
+
+    <table class="table table-bordered" style="margin-top:20px">
+        <tr style="background-color:gray;color:#ffffff">
+            <th>Foods and Amounts</th>
+
+            <th colspan="9" style="text-align:center">Average Use Last year</th>
+
+        </tr>
+
+        <tr style="background-color:gray;color:#ffffff">
+            <th class="span2">Food/Drink Item</th>
+
+            <th class="span2">Never or less than once/month</th>
+
+            <th class="span2">1-3 per month</th>
+
+            <th class="span2">Once a week</th>
+
+            <th class="span2">2-4 per week</th>
+
+            <th class="span2">5-6 per week</th>
+
+            <th class="span2">Once a day</th>
+
+            <th class="span2">2-3 per day</th>
+
+            <th class="span2">Measure</th>
+
+            <th class="span2">Unit</th>
+
+        </tr>
+
+
+        <tr ng-repeat="element in schema.properties">
+            <td>{{element.label}}</td>
+
+            <td ng-repeat="item in element.items">
+
+                <label class="radio inline">
+                    <div ng-if="$index==0">
+
+                        <input type="radio"
+                               id="{{element.name}}_frequency"
+                               name="{{element.name}}_frequency"
+                               data-bvalidator="{{element.valdn}}"
+                               data-bvalidator-msg="Please select an option"
+                               value="{{item.value}}"
+                               ng-model="data[element.name+'_frequency']"/>{{item.text}}
+                    </div>
+
+                    <div ng-if="$index!=0">
+
+                        <input type="radio"
+                               name="{{element.name}}_frequency"
+                               value="{{item.value}}"
+                               ng-model="data[element.name+'_frequency']"/>
+                    </div>
+                    {{item.text}} </label>
+            </td>
+
+            <td><input type="text" placeholder="Measure" class="input input-mini" data-bvalidator="required,number"
+                       name="{{element.name}}_measure" ng-model="data[element.name+'_measure']" ng-disabled="data[element.name+'_frequency']==0" />
+            </td>
+
+            <td><select class="input-medium" data-bvalidator="required" name="{{element.name}}_unit"
+                        ng-model="data[element.name+'_unit']" data-bvalidator-msg="Please select an option" ng-disabled="data[element.name+'_frequency']==0">
+                <option value=""></option>
+
+            </select>
+            </td>
+
+        </tr>
+        </tr>
+    </table>
+
+
+    <div class="controls">
+        <button class="btn  btn-primary"
+                type="submit" data-plus-as-tab="false">Save
+        </button>
+    </div>
+</form>
+
+
+
