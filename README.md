@@ -2,7 +2,7 @@
 
 ***
 
-[![Build Status]()]()
+[![Build Status](https://travis-ci.org/cghr/cgForm.png?branch=master)](https://travis-ci.org/cghr/cgForm)
 
 ## Demo
 
