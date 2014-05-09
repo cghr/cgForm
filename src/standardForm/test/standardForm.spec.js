@@ -98,7 +98,7 @@ describe('form element', function () {
         element = angular.element('<standard-form options="data"></standard-form>');
         compileDigest(scope, element);
         expect(element.find('div.controls input').length).toBe(5);//All Input fields
-        expect(element.find('div.controls input:text').length).toBe(1); // all text fields
+        expect(element.find('div.controls input:text').length).toBe(2); // all text fields including fields with display none
         expect(element.find('div.controls input:radio').length).toBe(3); //all radio entry fields
 
 
@@ -111,7 +111,7 @@ describe('form element', function () {
         element = angular.element('<standard-form></standard-form>');
         compileDigest(scope, element);
         expect(element.find('div.controls input').length).toBe(5);//All Input fields
-        expect(element.find('div.controls input:text').length).toBe(1); // all text fields
+        expect(element.find('div.controls input:text').length).toBe(2); // all text fields
         expect(element.find('div.controls input:radio').length).toBe(3); //all radio entry fields
 
 

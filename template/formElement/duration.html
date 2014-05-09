@@ -1,8 +1,8 @@
 <input type="text"  data-bvalidator="{{config.valdn}}"
-       ng-model="data[config.name+'_value']" init-focus />
+       ng-model="data[config.name+'_value']" init-focus="{{config.initFocus}}" />
 
 <select   data-bvalidator="required" data-bvalidator-msg="Please select an option"
-         ng-model="data[config.name+'_unit']" >
+         ng-model="data[config.name+'_unit']"  >
     <option value=""></option>
     <option ng-repeat="item in config.items" value="{{item.value}}">{{item.text}}</option>
 </select>

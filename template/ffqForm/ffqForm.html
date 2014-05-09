@@ -45,7 +45,7 @@
                         <input type="radio"
                                id="{{element.name}}_frequency"
                                name="{{element.name}}_frequency"
-                               data-bvalidator="{{element.valdn}}"
+                               data-bvalidator="required"
                                data-bvalidator-msg="Please select an option"
                                value="{{item.value}}"
                                ng-model="data[element.name+'_frequency']"/>{{item.text}}
@@ -61,14 +61,24 @@
                     {{item.text}} </label>
             </td>
 
-            <td><input type="text" placeholder="Measure" class="input input-mini" data-bvalidator="required,number"
+            <td><input type="text" placeholder="Measure" class="input input-mini" data-bvalidator="between[1:99],required"
                        name="{{element.name}}_measure" ng-model="data[element.name+'_measure']" ng-disabled="data[element.name+'_frequency']==0" />
             </td>
 
             <td><select class="input-medium" data-bvalidator="required" name="{{element.name}}_unit"
                         ng-model="data[element.name+'_unit']" data-bvalidator-msg="Please select an option" ng-disabled="data[element.name+'_frequency']==0">
-                <option value=""></option>
-
+                <option value=""></option>        
+                <option value="T1">Tambya</option>
+                <option value="G1">Glass</option>
+                <option value="K1">Cup (Big)</option>
+                <option value="K2">Cup (Medium)</option>
+                <option value="K3">Cup (Small)</option>
+                <option value="D1">Dish</option>
+                <option value="W1">Wati</option>
+                <option value="P1">Pali</option>
+                <option value="S1">Spoon (Big)</option>
+                <option value="S2">Spoon (Medium)</option>
+                <option value="S3">Spoon (Small)</option>
             </select>
             </td>
 

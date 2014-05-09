@@ -1,4 +1,4 @@
-angular.module('cgForm.formService', ['cgForm.formConfig', 'lodash', 'ui.router'])
+angular.module('cgForm.formService', ['cgForm.formConfig', 'cgForm.lodash', 'ui.router'])
     .factory('FormService', function (FormConfig, $http, $location, _, $stateParams) {
 
 
@@ -16,7 +16,20 @@ angular.module('cgForm.formService', ['cgForm.formConfig', 'lodash', 'ui.router'
             getLookupData: function (reqData) {
                 reqData.refId = $stateParams[reqData.ref];
                 return $http.post(FormConfig.getConfig().lookupBaseUrl, reqData);
+            },
+            getCrossCheckData:function(reqData){
+                reqData.refId = $stateParams[reqData.ref];
+                return $http.post(FormConfig.getConfig().crossCheckBaseUrl, reqData);
+
+            },
+            checkCrossFlow: function (crossFlows) {
+                angular.forEach(crossFlows, function (crossFlow) {
+
+                    crossFlow.refId = $stateParams[crossFlow.ref];
+
+                });
+                return $http.post(FormConfig.getConfig().crossFlowBaseUrl, crossFlows);
+
             }
         };
-    }
-);
+    });

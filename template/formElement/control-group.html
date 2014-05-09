@@ -1,7 +1,8 @@
-<div class="control-group" id="{{config.name}}-control-group" scroll-top ng-focus="modifyFlow(config.name)">
+<div class="control-group" id="{{config.name}}-control-group" scroll-top="{{config.scrollTop}}">
     <div class="control-label">
         <label style="font-weight:bold">{{config.label}} </label>
+        <div ng-if="config.image!=''"><img ng-src="{{config.image}}" /></div>
     </div>
-    <div class="controls"></div>
+    <div class="controls" ng-click="jumpFlow(config.name)"></div>
 
 </div>

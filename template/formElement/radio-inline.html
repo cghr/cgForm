@@ -1,6 +1,6 @@
 <label class="radio inline" ng-repeat="item in config.items">
     <div ng-if="$index==0"><input  data-bvalidator="{{config.valdn}}" data-bvalidator-msg="Please select an option" type="radio" name="{{config.name}}"
-                                   value="{{item.value}}" ng-model="data[config.name]" init-focus/> {{item.text}}
+                                   value="{{item.value}}" ng-model="data[config.name]" init-focus="{{config.initFocus}}"/> {{item.text}}
     </div>
     <div ng-if="$index!=0"><input  type="radio" name="{{config.name}}" value="{{item.value}}"
                                    ng-model="data[config.name]"/> {{item.text}}

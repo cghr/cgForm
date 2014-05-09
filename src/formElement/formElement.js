@@ -1,4 +1,4 @@
-angular.module('cgForm.formElement', ['cgForm.templateFactory','cgForm.initFocus','cgForm.scrollTop','cgForm.ngEnter'])
+angular.module('cgForm.formElement', ['cgForm.templateFactory','cgForm.initFocus','cgForm.scrollTop','cgForm.ngEnter','cgForm.myFocus'])
     .directive('formElement', function ($http, $compile, $templateCache, TemplateFactory) {
         return {
             replace: true,
@@ -10,6 +10,9 @@ angular.module('cgForm.formElement', ['cgForm.templateFactory','cgForm.initFocus
 
                 /* Evaluate data supplied in attrs */
                 scope.config = scope.$eval(attrs.config);
+                attrs.$observe('config',function(){
+                    scope.config = scope.$eval(attrs.config);
+                });
 
                 /* Create a templateUrl from config.type */
                 var isHeading = (scope.config.type === 'heading');

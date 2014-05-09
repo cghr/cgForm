@@ -29,6 +29,8 @@ describe('form config', function () {
             submitUrl: 'http://fakeServer/api/data/dataStoreService/',
             resourceBaseUrl: 'http://fakeServer/api/data/dataAccessService/',
             lookupBaseUrl: 'http://fakeServer/api/LookupService/',
+            crossFlowBaseUrl:'http://fakeServer/api/CrossFlowService',
+            crossCheckBaseUrl:'http://fakeServer/api/CrossCheckService',
             submitLabel: 'Save',
             style: 'well'
         };

@@ -3,14 +3,14 @@
         <input data-bvalidator="{{config.valdn}}" data-bvalidator-msg="Please Select an option" type="checkbox"
                name="{{config.name}}[]"
                value="{{item.value}}"
-               ng-model="data[config.name][item.value]" init-focus click-focus />
+               ng-model="data[config.name][item.value]" init-focus="{{config.initFocus}}" />
         {{item.text}}
     </div>
     <div ng-if="$index!=0">
         <input type="checkbox"
                name="{{config.name}}[]"
                value="{{item.value}}"
-               ng-model="data[config.name][item.value]"  click-focus />
+               ng-model="data[config.name][item.value]" />
         {{item.text}}
 
     </div>

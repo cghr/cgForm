@@ -14,6 +14,8 @@ angular.module('cgForm.formConfig', [])
                     submitUrl: context + 'api/data/dataStoreService/',
                     resourceBaseUrl: context + 'api/data/dataAccessService/',
                     lookupBaseUrl: context + 'api/LookupService/',
+                    crossFlowBaseUrl:context+'api/CrossFlowService',
+                    crossCheckBaseUrl:context+'api/CrossCheckService',
                     submitLabel: 'Save',
                     style: 'well'
                 };

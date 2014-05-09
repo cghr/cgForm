@@ -1,5 +1,5 @@
-angular.module('cgForm.ffqForm', ['cgForm.formElement', 'cgForm.formConfig', 'cgForm.formService' , 'lodash', 'cgForm.schemaFactory', 'ui.router'])
-    .directive('ffqForm', function (FormConfig, _, SchemaFactory, $state, FormService, $rootScope) {
+angular.module('cgForm.ffqForm', ['cgForm.formElement', 'cgForm.formConfig', 'cgForm.formService' , 'cgForm.lodash', 'cgForm.schemaFactory', 'ui.router','cgForm.joelpurra'])
+    .directive('ffqForm', function (FormConfig, _, SchemaFactory, $state, FormService, $rootScope,JoelPurra) {
         return {
             templateUrl: 'template/ffqForm/ffqForm.html',
             restrict: 'E',
@@ -10,21 +10,28 @@ angular.module('cgForm.ffqForm', ['cgForm.formElement', 'cgForm.formConfig', 'cg
             link: function postLink(scope, element) {
 
                 /* Load Json Schema for current state if not supplied through attributes */
-                scope.schema = scope.options || SchemaFactory.get($state.current.name);
+                scope.schema = angular.copy(scope.options) || angular.copy(SchemaFactory.get($state.current.name));
+
+                /* Initialize form data */
+                scope.data = {};
 
                 /* Extend the current schema with default config */
                 scope.schema = _.extend(scope.schema, FormConfig.getConfig());
 
                 /* Evaluate information in hidden fields */
                 angular.forEach(scope.schema.properties, function (elem) {
+                    
                     if (elem.name !== 'datastore' && elem.type === 'hidden') {
                         elem.value = $rootScope.$eval(elem.value);
                     }
+                    if(elem.type==='hidden'){
+                            scope.data[elem.name]=elem.value;
+                    }
+                    
                 });
 
 
-                /* Initialize form data */
-                scope.data = {};
+                
 
                 /* Initialize checkbox element's data with empty objects in scope.data */
                 var multipleSelectElements = _.filter(scope.schema.properties, {type: 'checkbox'});
@@ -47,7 +54,7 @@ angular.module('cgForm.ffqForm', ['cgForm.formElement', 'cgForm.formConfig', 'cg
                 element.bValidator();
 
             },
-            controller: function ($scope, $element) {
+            controller: function ($scope, $element,$state,$stateParams) {
 
                 $scope.onSubmit = function (data) {
 
@@ -62,7 +69,7 @@ angular.module('cgForm.ffqForm', ['cgForm.formElement', 'cgForm.formConfig', 'cg
                 function postData(data) {
 
                     var done = function () {
-                        $scope.$eval($scope.schema.onSave);
+                        $state.go($scope.schema.onSave,$stateParams);
 
                     };
                     var fail = function () {

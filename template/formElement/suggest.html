@@ -1,5 +1,5 @@
 <input type="text"
        data-bvalidator="{{config.valdn}}"
        ng-model="data[config.name]"
-       typeahead="item.text for item in config.items"
-       init-focus/>
+       typeahead="item.text for item in config.items | filter:$viewValue"
+       init-focus="{{config.initFocus}}" />

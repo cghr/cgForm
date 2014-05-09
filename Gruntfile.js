@@ -8,6 +8,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-html2js');
+  grunt.loadNpmTasks('grunt-ngmin');
   grunt.loadNpmTasks('grunt-karma');
   grunt.loadNpmTasks('grunt-conventional-changelog');
   grunt.loadNpmTasks('grunt-ngdocs');
@@ -65,6 +66,22 @@ module.exports = function(grunt) {
         dest: '<%= dist %>/<%= filename %>-tpls-<%= pkg.version %>.js'
       }
     },
+    /**
+         * 'ng-min' annotates the sources before minifying. That is, it allows us
+         * to code without the array syntax.
+         */
+         ngmin: {
+            compile: {
+                files: [
+                    {
+                        src: [ '<%=dist%>/*.js' ],
+                        cwd: '',
+                        dest: '',
+                        expand: true
+                    }
+                ]
+            }
+        },
     copy: {
       demohtml: {
         options: {
@@ -323,7 +340,7 @@ module.exports = function(grunt) {
     grunt.config('concat.dist_tpls.src', grunt.config('concat.dist_tpls.src')
                  .concat(srcFiles).concat(tpljsFiles));
 
-    grunt.task.run(['concat', 'uglify']);
+    grunt.task.run(['concat','ngmin', 'uglify']);
   });
 
   grunt.registerTask('test', 'Run tests on singleRun karma server', function () {
