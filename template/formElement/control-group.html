@@ -1,6 +1,6 @@
 <div class="control-group" id="{{config.name}}-control-group" scroll-top="{{config.scrollTop}}">
     <div class="control-label">
-        <label style="font-weight:bold">{{config.label}} </label>
+        <label style="font-weight:bold">{{config.label}} <a  ng-if="config.help" popover="{{config.help}}" popover-trigger="mouseenter">Help</a></label>
         <div ng-if="config.image!=''"><img ng-src="{{config.image}}" /></div>
     </div>
     <div class="controls" ng-click="jumpFlow(config.name)"></div>

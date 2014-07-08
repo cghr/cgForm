@@ -37,7 +37,7 @@
         <tr ng-repeat="element in schema.properties">
             <td>{{element.label}}</td>
 
-            <td ng-repeat="item in element.items">
+            <td ng-repeat="item in [0,1,2,3,4,5,6]">
 
                 <label class="radio inline">
                     <div ng-if="$index==0">
@@ -47,18 +47,18 @@
                                name="{{element.name}}_frequency"
                                data-bvalidator="required"
                                data-bvalidator-msg="Please select an option"
-                               value="{{item.value}}"
-                               ng-model="data[element.name+'_frequency']"/>{{item.text}}
+                               value="{{item}}"
+                               ng-model="data[element.name+'_frequency']"/>
                     </div>
 
                     <div ng-if="$index!=0">
 
                         <input type="radio"
                                name="{{element.name}}_frequency"
-                               value="{{item.value}}"
+                               value="{{item}}"
                                ng-model="data[element.name+'_frequency']"/>
                     </div>
-                    {{item.text}} </label>
+                    </label>
             </td>
 
             <td><input type="text" placeholder="Measure" class="input input-mini" data-bvalidator="between[1:99],required"
@@ -67,18 +67,7 @@
 
             <td><select class="input-medium" data-bvalidator="required" name="{{element.name}}_unit"
                         ng-model="data[element.name+'_unit']" data-bvalidator-msg="Please select an option" ng-disabled="data[element.name+'_frequency']==0">
-                <option value=""></option>        
-                <option value="T1">Tambya</option>
-                <option value="G1">Glass</option>
-                <option value="K1">Cup (Big)</option>
-                <option value="K2">Cup (Medium)</option>
-                <option value="K3">Cup (Small)</option>
-                <option value="D1">Dish</option>
-                <option value="W1">Wati</option>
-                <option value="P1">Pali</option>
-                <option value="S1">Spoon (Big)</option>
-                <option value="S2">Spoon (Medium)</option>
-                <option value="S3">Spoon (Small)</option>
+                <option ng-repeat="item in element.items" value="{{item.value}}">{{item.text}}</option>
             </select>
             </td>
 

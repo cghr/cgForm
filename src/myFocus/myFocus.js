@@ -4,8 +4,7 @@ angular.module('cgForm.myFocus', [])
             link: function postLink(scope, elem, attrs) {
 
                 elem.bind('focus', function (e) {
-                        scope.$apply(attrs.myFocus);
-                    
+                    scope.$apply(attrs.myFocus);
                 });
 
             }

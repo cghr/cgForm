@@ -1,6 +1,6 @@
 <div class="control-group" id="{{config.name}}-control-group" scroll-top="{{config.scrollTop}}">
     <div class="control-label" >
-        <div class="alert alert-error" style="font-weight:bold">{{config.label}}</div>
+        <div class="alert alert-error" style="font-weight:bold">{{config.label}}<a  ng-if="config.help" popover="{{config.help}}" popover-trigger="mouseenter">Help</a></div>
     </div>
     <div class="controls"></div>
 </div>

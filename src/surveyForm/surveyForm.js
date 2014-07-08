@@ -117,6 +117,17 @@ angular.module('cgForm.surveyForm', ['cgForm.formElement', 'cgForm.formConfig', 
             },
             link: function postLink(scope, element) {
 
+                Date.prototype.today = function () {
+                    return this.getFullYear() + '-' + (((this.getMonth() + 1) < 10) ? '0' : '') + (this.getMonth() + 1) + '-' + ((this.getDate() < 10) ? '0' : '') + this.getDate();
+                };
+
+
+                Date.prototype.timeNow = function () {
+                    return ((this.getHours() < 10) ? '0' : '') + this.getHours() + ':' + ((this.getMinutes() < 10) ? '0' : '') + this.getMinutes() + ':' + ((this.getSeconds() < 10) ? '0' : '') + this.getSeconds();
+                };
+                var newDate = new Date();
+                $rootScope.timestamp = newDate.today() + ' ' + newDate.timeNow();
+
                 /* Load Json Schema for current state if not supplied through attributes */
                 scope.schema = angular.copy(scope.options) || angular.copy(SchemaFactory.get($state.current.name));
                 /* Initialize form data */
@@ -191,6 +202,8 @@ angular.module('cgForm.surveyForm', ['cgForm.formElement', 'cgForm.formConfig', 
                     
                     if (elem.name !== 'datastore' && elem.type === 'hidden') {
                     elem.value = $rootScope.$eval(elem.value);
+                    console.log(elem);
+                    console.log(elem.value);
 
                     }
                     if(elem.type==='hidden'){

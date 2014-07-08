@@ -1,17 +1,24 @@
 angular.module('cgForm.initFocus', [])
     .directive('initFocus', function ($timeout) {
 
-        return {
-            link: function (scope, elm, attrs) {
+        function postLink(scope, elm, attrs) {
 
-                if (attrs.initFocus == 'false') {
-                    return false;
-                }
-                $timeout(function () {
-                    elm.focus();
-                }, 0);
+            if (attrs.initFocus === 'false')
+                return
+
+            function elmFocus() {
+                elm.focus()
             }
+
+            $timeout(elmFocus, 0);
+
+
+        }
+
+        return {
+            link: postLink
         };
 
 
-    });
+    })
+;

@@ -1,17 +1,23 @@
-angular.module('cgForm.schemaFactory', [])
-    .factory('SchemaFactory', function () {
+angular.module('cgForm.schemaFactory', ['cgForm.lodash'])
+    .factory('SchemaFactory', function (_) {
+
+        function getSchema(schemaName) {
+
+            if (_.isUndefined(this[schemaName]))
+                throw 'Schema Not found for ' + schemaName
+
+            return this[schemaName];
+        }
+
+        function putSchema(schemaName, schemaObject) {
+
+            this[schemaName] = schemaObject;
+        }
+
 
         return {
-            get: function (schemaName) {
-
-                if(!this[schemaName]){
-                    throw new Error('Schema Not found for '+schemaName);
-                }
-                return this[schemaName];
-            },
-            put: function (schemaName, schemaObject) {
-                this[schemaName] = schemaObject;
-            }
+            get: getSchema,
+            put: putSchema
         };
 
     });
