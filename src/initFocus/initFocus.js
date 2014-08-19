@@ -10,14 +10,10 @@ angular.module('cgForm.initFocus', [])
                 elm.focus()
             }
 
-            $timeout(elmFocus, 0);
-
-
+            $timeout(elmFocus, 0)
         }
 
-        return {
-            link: postLink
-        };
+        return { restrict: 'A', link: postLink }
 
 
     })

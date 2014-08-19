@@ -9,7 +9,7 @@ describe('form element', function () {
         'control-group',
         'control-group-heading',
         'dropdown',
-        'duration',
+        'text_select',
         'gps',
         'hidden',
         'password',
@@ -103,8 +103,8 @@ describe('form element', function () {
         expect(element.find('div.controls select').children().length).toBe(4);//Angular adds an extra ?undefined? option
     });
 
-    it('duration:should render a text field and select field for duration type', function () {
-        age.type = 'duration';
+    it('duration:should render a text field and select field for text_select type', function () {
+        age.type = 'text_select';
         scope.dataConfig = age;
         compileDigest(scope, element);
         expect(element.find('div.controls input:text').length).toBe(1);

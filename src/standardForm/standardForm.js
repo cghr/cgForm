@@ -75,7 +75,7 @@ angular.module('cgForm.standardForm', ['cgForm.formElement', 'cgForm.formConfig'
                 scope.data = scope.formdata || {};
 
                 /* Extend the current schema with default config */
-                scope.schema = _.extend(scope.schema, FormConfig.getConfig());
+                scope.schema = _.extend(scope.schema, FormConfig);
 
 
                 /* Load lookup data if any and add initFocus attr to every elem to disable initFocus attribute */

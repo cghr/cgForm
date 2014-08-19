@@ -7,7 +7,7 @@ describe('form element', function () {
         'control-group',
         'control-group-heading',
         'dropdown',
-        'duration',
+        'text_select',
         'gps',
         //'heading',
         'hidden',

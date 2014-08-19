@@ -14,28 +14,19 @@ describe('form config', function () {
     }));
 
 
-    it('should throw an error if $rootScope has no serviceBaseUrl', function () {
-
-        expect(function () {
-            formConfig.getConfig();
-        }).toThrow('serviceBaseUrl  not found in $rootScope');
-
-    });
-
     it('should return a default config with a given serviceBaseUrl', function () {
 
-        scope.serviceBaseUrl = 'http://fakeServer/';
         var expectedConfig = {
-            submitUrl: 'http://fakeServer/api/data/dataStoreService/',
-            resourceBaseUrl: 'http://fakeServer/api/data/dataAccessService/',
-            lookupBaseUrl: 'http://fakeServer/api/LookupService/',
-            crossFlowBaseUrl:'http://fakeServer/api/CrossFlowService',
-            crossCheckBaseUrl:'http://fakeServer/api/CrossCheckService',
+            submitUrl: 'api/data/dataStoreService/',
+            resourceBaseUrl: 'api/data/dataAccessService/',
+            lookupBaseUrl: 'api/LookupService/',
+            crossFlowBaseUrl: 'api/CrossFlowService',
+            crossCheckBaseUrl: 'api/CrossCheckService',
             submitLabel: 'Save',
             style: 'well'
         };
 
-        expect(formConfig.getConfig()).toEqual(expectedConfig);
+        expect(formConfig).toEqual(expectedConfig);
 
     });
 

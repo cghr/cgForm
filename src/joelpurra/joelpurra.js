@@ -1,10 +1,8 @@
 angular.module('cgForm.joelpurra', [])
     .factory('JoelPurra', function ($window) {
 
-        if (!$window.JoelPurra)
-            throw 'plusAsTab library not available'
+        var JoelPurra = $window.JoelPurra
+        JoelPurra.PlusAsTab.setOptions({key: 13})
 
-        $window.JoelPurra.PlusAsTab.setOptions({key: 13})
-        
-        return $window.JoelPurra;
+        return JoelPurra;
     });

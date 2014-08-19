@@ -1,37 +1,26 @@
-angular.module('cgForm.ffqForm', ['cgForm.formElement', 'cgForm.formConfig', 'cgForm.formService' , 'cgForm.lodash', 'cgForm.schemaFactory', 'ui.router', 'cgForm.joelpurra'])
-    .directive('ffqForm', function (FormConfig, _, SchemaFactory, $state, FormService, $rootScope, JoelPurra) {
+angular.module('cgForm.ffqForm', ['cgForm.formElement', 'cgForm.formConfig', 'cgForm.formService' , 'cgForm.lodash', 'cgForm.schemaFactory', 'ui.router', 'cgForm.joelpurra', 'cgForm.timelog', 'cgForm.schemaResolver'])
+    .directive('ffqForm', function (FormConfig, _, SchemaFactory, $state, FormService, $rootScope, JoelPurra, TimeLogFactory, SchemaResolver) {
 
         function postLink(scope, element) {
 
-            Date.prototype.today = function () {
-                return this.getFullYear() + '-' + (((this.getMonth() + 1) < 10) ? '0' : '') + (this.getMonth() + 1) + '-' + ((this.getDate() < 10) ? '0' : '') + this.getDate();
-            };
 
-
-            Date.prototype.timeNow = function () {
-                return ((this.getHours() < 10) ? '0' : '') + this.getHours() + ':' + ((this.getMinutes() < 10) ? '0' : '') + this.getMinutes() + ':' + ((this.getSeconds() < 10) ? '0' : '') + this.getSeconds();
-            };
-            var newDate = new Date();
-            $rootScope.timestamp = newDate.today() + ' ' + newDate.timeNow();
-
-            /* Load Json Schema for current state if not supplied through attributes */
-            scope.schema = _.clone(scope.options) || _.clone(SchemaFactory.get($state.current.name))
+            $rootScope.timestamp = TimeLogFactory.getCurrentTime()
 
             /* Initialize form data */
             scope.data = {};
 
-            /* Extend the current schema with default config */
-            scope.schema = _.extend(scope.schema, FormConfig.getConfig());
+            /* Load Json Schema for current state if not supplied through attributes */
+            scope.schema = SchemaResolver.resolve(scope)
 
             /* Evaluate information in hidden fields */
-            angular.forEach(scope.schema.properties, function (elem) {
+            _.each(scope.schema.properties, function (elem) {
 
-                if (elem.name !== 'datastore' && elem.type === 'hidden') {
+                if (elem.name !== 'datastore' && elem.type === 'hidden')
                     elem.value = $rootScope.$eval(elem.value);
-                }
-                if (elem.type === 'hidden') {
+
+                if (elem.type === 'hidden')
                     scope.data[elem.name] = elem.value;
-                }
+
 
             });
 
@@ -60,9 +49,6 @@ angular.module('cgForm.ffqForm', ['cgForm.formElement', 'cgForm.formConfig', 'cg
 
         function controllerFn($scope, $element, $state, $stateParams) {
 
-            function isValidForm() {
-                return $element.data('bValidator').validate()
-            }
 
             $scope.onSubmit = function (data) {
 
@@ -71,18 +57,17 @@ angular.module('cgForm.ffqForm', ['cgForm.formElement', 'cgForm.formConfig', 'cg
                     postData(data)
 
             };
+            function isValidForm() {
+                return $element.data('bValidator').validate()
+            }
 
             /* Posts form data to Sever */
             function postData(data) {
 
-                var done = function () {
-                    $state.go($scope.schema.onSave, $stateParams);
-
-                };
-                var fail = function () {
-                    throw  'Failed to post data'
-                };
-                FormService.postResource(data).then(done, fail);
+                FormService.postResource()
+                    .then(function () {
+                        $state.go($scope.schema.onSave, $stateParams);
+                    })
             }
         }
 
