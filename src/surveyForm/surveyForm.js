@@ -1,5 +1,5 @@
 angular.module('cgForm.surveyForm', ['cgForm.formElement', 'cgForm.formConfig', 'cgForm.schemaFactory', 'cgForm.formService', 'cgForm.lodash', 'ui.router'])
-    .controller('surveyFormCtrl', function ($scope, $element, FormService, $state, $stateParams) {
+    .controller('surveyFormCtrl', function ($scope, $element, FormService, $state, $stateParams, _) {
 
         /* Posts  data to Sever */
         function postData() {
@@ -19,6 +19,18 @@ angular.module('cgForm.surveyForm', ['cgForm.formElement', 'cgForm.formConfig', 
             var fail = function () {
                 throw new Error('Failed to post data');
             };
+            //Format muliselect values
+            angular.forEach($scope.data, function (value, key) {
+                if (_.isObject(value)) {
+                    var selections = _.keys(value, function (val) {
+                        return val;
+                    });
+                    $scope.data[key] = selections.join(';');
+
+                }
+
+            });
+
             FormService.postResource($scope.data).then(done, fail);
         }
 
@@ -54,6 +66,24 @@ angular.module('cgForm.surveyForm', ['cgForm.formElement', 'cgForm.formConfig', 
 
             $scope.flowSeq++;
             var nextItemInFlow = $scope.schema.properties[$scope.flowSeq];
+            if (!_.isUndefined(nextItemInFlow)) {
+                if (nextItemInFlow.type == 'checkbox')
+                    $scope.data[nextItemInFlow.name] = {};
+
+                else if (nextItemInFlow.type == 'dynamic_dropdown') {
+                    var reqData = angular.copy(nextItemInFlow.metadata)
+                    reqData['refValue'] = $scope.$eval(nextItemInFlow['metadata']['refValue']);
+                    FormService.getDynamicDropdownData(reqData).then(function (resp) {
+                        var dynamicDropdownIndex = $scope.flowSeq
+                        $scope.schema.properties[$scope.flowSeq].items = resp.data
+                        $scope.flow.properties.splice($scope.flow.properties.length - 1, 1);
+                        $scope.flow.properties.push($scope.schema.properties[dynamicDropdownIndex]);
+                    }, function () {
+                        console.log('error fetching data');
+
+                    });
+                }
+            }
             if (!nextItemInFlow) {
                 postData();
                 return;
@@ -130,6 +160,9 @@ angular.module('cgForm.surveyForm', ['cgForm.formElement', 'cgForm.formConfig', 
 
                 /* Load Json Schema for current state if not supplied through attributes */
                 scope.schema = angular.copy(scope.options) || angular.copy(SchemaFactory.get($state.current.name));
+                /* Prompt before form submit */
+                scope.schema.properties.push({flow: '', type: 'heading', label: 'Section Completed. Press Enter to Continue ', valdn: ''});
+
                 /* Initialize form data */
                 scope.data = {};
 
@@ -139,15 +172,17 @@ angular.module('cgForm.surveyForm', ['cgForm.formElement', 'cgForm.formConfig', 
                 /* Load lookup data and Cross Flow dynamic validation */
                 angular.forEach(scope.schema.properties, function (elem) {
                     if (elem.type === 'lookup') {
-                        console.log('lookup ');
                         FormService.getLookupData(elem.lookup).then(function (resp) {
 
                             elem.type = 'radio';
                             elem.items = resp.data;
 
                             var index = _.findIndex(scope.flow.properties, {name: elem.name});
-                            scope.flow.properties[index].type = 'radio';
-                            scope.flow.properties[index].items = resp.data;
+                            if (index != -1) {
+                                scope.flow.properties[index].type = 'radio';
+                                scope.flow.properties[index].items = resp.data;
+
+                            }
 
                         });
                     }
@@ -156,7 +191,8 @@ angular.module('cgForm.surveyForm', ['cgForm.formElement', 'cgForm.formConfig', 
                             var condition = elem.crossCheck.condition.replace('{value}', resp.data.value);
                             elem.valdn = condition;
                             var index = _.findIndex(scope.flow.properties, {name: elem.name});
-                            scope.flow.properties[index].valdn = condition;
+                            if (index != -1)
+                                scope.flow.properties[index].valdn = condition;
 
                         });
                     }
@@ -193,6 +229,10 @@ angular.module('cgForm.surveyForm', ['cgForm.formElement', 'cgForm.formConfig', 
 
                         return element.crossFlowCheck !== false;
                     });
+                    /* Render Initial Item in the flow after all hidden elements(without conditions) */
+                    scope.flow.properties.push(angular.copy(scope.schema.properties[++hiddenCount]));
+                    scope.flowSeq++;
+                    scope.flowIndex++;
 
                 });
 
@@ -202,8 +242,6 @@ angular.module('cgForm.surveyForm', ['cgForm.formElement', 'cgForm.formConfig', 
 
                     if (elem.name !== 'datastore' && elem.type === 'hidden') {
                         elem.value = $rootScope.$eval(elem.value);
-                        console.log(elem);
-                        console.log(elem.value);
 
                     }
                     if (elem.type === 'hidden') {
@@ -252,10 +290,6 @@ angular.module('cgForm.surveyForm', ['cgForm.formElement', 'cgForm.formConfig', 
 
                 }
 
-                /* Render Initial Item in the flow after all hidden elements(without conditions) */
-                scope.flow.properties.push(angular.copy(scope.schema.properties[++hiddenCount]));
-                scope.flowSeq++;
-                scope.flowIndex++;
 
             },
             controller: 'surveyFormCtrl'

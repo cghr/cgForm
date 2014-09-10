@@ -1,0 +1,7 @@
+<select  data-bvalidator="{{config.valdn}}"
+         data-bvalidator-msg="Please select an option"
+         ng-model="data[config.name]"
+         init-focus>
+    <option ng-repeat="item in config.items" value="{{item.value}}" init-focus="{{config.initFocus}}" >{{item.text}}</option>
+
+</select>

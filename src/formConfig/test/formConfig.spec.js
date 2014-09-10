@@ -22,6 +22,7 @@ describe('form config', function () {
             lookupBaseUrl: 'api/LookupService/',
             crossFlowBaseUrl: 'api/CrossFlowService',
             crossCheckBaseUrl: 'api/CrossCheckService',
+            dynamicDropdownBaseUrl: 'api/dynamicDropdownService',
             submitLabel: 'Save',
             style: 'well'
         };

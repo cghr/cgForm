@@ -4,16 +4,7 @@ angular.module('cgForm.formService', ['cgForm.formConfig', 'cgForm.lodash', 'ui.
 
         function postData(url, data) {
 
-            function success() {
-
-            }
-
-            function error() {
-                $log.info()
-            }
-
-            return $http.post(url, data).success()
-            error()
+            return $http.post(url, data)
         }
 
         function getData(url) {
@@ -58,12 +49,18 @@ angular.module('cgForm.formService', ['cgForm.formConfig', 'cgForm.lodash', 'ui.
 
         }
 
+        function getDynamicDropDownData(reqData) {
+
+            return postData(FormConfig.dynamicDropdownBaseUrl, reqData)
+        }
+
 
         return {
             getResource: getResource,
             postResource: postResource,
             getLookupData: getLookupData,
             getCrossCheckData: getCrossCheckData,
-            checkCrossFlow: checkCrossFlow
+            checkCrossFlow: checkCrossFlow,
+            getDynamicDropdownData: getDynamicDropDownData
         }
     })

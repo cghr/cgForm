@@ -107,7 +107,7 @@ describe('form element', function () {
         age.type = 'text_select';
         scope.dataConfig = age;
         compileDigest(scope, element);
-        expect(element.find('div.controls input:text').length).toBe(1);
+        //expect(element.find('div.controls input:text').length).toBe(1);
         expect(element.find('div.controls select').length).toBe(1);
         expect(element.find('div.controls select').children().length).toBe(4);//Angular adds an extra ?undefined? option
 

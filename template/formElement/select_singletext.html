@@ -1,11 +1,7 @@
-<span ng-repeat="item in config.items">
-    <input type="text" data-bvalidator="{{item.valdn}}"
-           ng-model="data[config.name+'_value']" class="input-medium" ng-if="data[config.name+'_unit']==item.value"
-           placeholder="{{item.value}}" />
-</span>
 <select class="span2" data-bvalidator="required" data-bvalidator-msg="Please select an option"
         ng-model="data[config.name+'_unit']" init-focus="{{config.initFocus}}">
     <option value=""></option>
     <option ng-repeat="item in config.items" value="{{item.value}}">{{item.text}}</option>
 </select>
-
+<input type="text" data-bvalidator="{{config.valdn}}"
+       ng-model="data[config.name+'_value']" class="input-medium"/>
