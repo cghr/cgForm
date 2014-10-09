@@ -40,6 +40,13 @@ angular.module('cgForm.ffqForm', ['cgForm.formElement', 'cgForm.formConfig', 'cg
             /* Remove hidden items from schema */
             _.remove(scope.schema.properties, {type: 'hidden'});
 
+            /* Get form data if already populated */
+            FormService.getResource(scope.data.datastore).then(function (resp) {
+                delete resp.data.timelog;
+                delete resp.data.endtime;
+                angular.extend(scope.data, resp.data);
+            });
+
 
             /* Bind Enter as Tab and Validation to form */
             element.plusAsTab();
@@ -52,7 +59,6 @@ angular.module('cgForm.ffqForm', ['cgForm.formElement', 'cgForm.formConfig', 'cg
 
             $scope.onSubmit = function (data) {
 
-                /* Validate form before submit */
                 if (isValidForm())
                     postData(data)
 

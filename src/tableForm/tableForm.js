@@ -8,6 +8,11 @@ angular.module('cgForm.tableForm', ['cgForm.formElement', 'cgForm.formConfig', '
                 postData(data)
 
         };
+        $scope.alcoholFreqFocus= function (data) {
+
+
+
+        }
         function isValidForm() {
             return $element.data('bValidator').validate()
         }

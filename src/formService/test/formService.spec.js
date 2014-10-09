@@ -1,7 +1,7 @@
 describe('Service: FormService', function () {
 
 
-    var currentLocation = '/user/1';
+    var currentLocation = '/user/1/basicInf';
 
     // load the service's module
     beforeEach(module('cgForm.formService'));

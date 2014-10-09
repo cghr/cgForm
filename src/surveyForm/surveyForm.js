@@ -1,16 +1,32 @@
-angular.module('cgForm.surveyForm', ['cgForm.formElement', 'cgForm.formConfig', 'cgForm.schemaFactory', 'cgForm.formService', 'cgForm.lodash', 'ui.router'])
-    .controller('surveyFormCtrl', function ($scope, $element, FormService, $state, $stateParams, _) {
+angular.module('cgForm.surveyForm', ['cgForm.formElement', 'cgForm.formConfig', 'cgForm.schemaFactory', 'cgForm.formService', 'cgForm.lodash', 'ui.router', 'cgForm.timelog'])
+    .controller('surveyFormCtrl', function ($scope, $element, FormService, $state, $stateParams, _, $log) {
 
         /* Posts  data to Sever */
         function postData() {
             var done = function () {
 
-                if ($scope.schema.onSave !== '') {
+                if ($scope.schema.onSave !== '')
                     $state.go($scope.schema.onSave, $stateParams);
+                else if ($scope.schema.condtion !== '' && $scope.schema.crossEntity === '') {
+                    var data = $scope.data
+                    var transition = eval($scope.schema.condition) ? $scope.schema.success : $scope.schema.fail
+                    $state.go(transition, $stateParams)
                 }
-                else {
+                else if ($scope.schema.crossEntity !== '') {
+
+                    var params = $scope.schema.crossEntity.split(';')
+                    var entity = params[0]
+                    var entityId = params[1]
+                    FormService.getResource(entity, $stateParams[entityId])
+                        .then(function (resp) {
+                            var data = resp.data
+                            var transition = eval($scope.schema.condition) ? $scope.schema.success : $scope.schema.fail
+                            $state.go(transition, $stateParams)
+                        })
+                }
+
+                else
                     $scope.fnct({data: $scope.data});
-                }
 
 
                 //$rootScope.$eval($scope.schema.onSave);
@@ -53,7 +69,7 @@ angular.module('cgForm.surveyForm', ['cgForm.formElement', 'cgForm.formConfig', 
                 var matches = nextCondition.match(/{.*}/);
                 if (matches) {
                     var evalValue = $scope.$eval(matches[0].replace('{', '').replace('}', ''));
-                    $scope.flow.properties[$scope.flowIndex].valdn = nextCondition.replace(/{.*}/, evalValue);
+                    _.last($scope.flow.properties).valdn = nextCondition.replace(/{.*}/, evalValue);
                 }
             } else {
                 postData();
@@ -79,7 +95,7 @@ angular.module('cgForm.surveyForm', ['cgForm.formElement', 'cgForm.formConfig', 
                         $scope.flow.properties.splice($scope.flow.properties.length - 1, 1);
                         $scope.flow.properties.push($scope.schema.properties[dynamicDropdownIndex]);
                     }, function () {
-                        console.log('error fetching data');
+                        $log.error('Failed to fetch data')
 
                     });
                 }
@@ -136,7 +152,7 @@ angular.module('cgForm.surveyForm', ['cgForm.formElement', 'cgForm.formConfig', 
         };
 
     })
-    .directive('surveyForm', function (FormConfig, _, SchemaFactory, $state, FormService, $rootScope, $timeout, $q) {
+    .directive('surveyForm', function (FormConfig, _, SchemaFactory, $state, FormService, $rootScope, $timeout, $q, TimeLogFactory) {
         return {
             templateUrl: 'template/surveyForm/surveyForm.html',
             restrict: 'E',
@@ -147,16 +163,7 @@ angular.module('cgForm.surveyForm', ['cgForm.formElement', 'cgForm.formConfig', 
             },
             link: function postLink(scope, element) {
 
-                Date.prototype.today = function () {
-                    return this.getFullYear() + '-' + (((this.getMonth() + 1) < 10) ? '0' : '') + (this.getMonth() + 1) + '-' + ((this.getDate() < 10) ? '0' : '') + this.getDate();
-                };
-
-
-                Date.prototype.timeNow = function () {
-                    return ((this.getHours() < 10) ? '0' : '') + this.getHours() + ':' + ((this.getMinutes() < 10) ? '0' : '') + this.getMinutes() + ':' + ((this.getSeconds() < 10) ? '0' : '') + this.getSeconds();
-                };
-                var newDate = new Date();
-                $rootScope.timestamp = newDate.today() + ' ' + newDate.timeNow();
+                $rootScope.timestamp = TimeLogFactory.getCurrentTime()
 
                 /* Load Json Schema for current state if not supplied through attributes */
                 scope.schema = angular.copy(scope.options) || angular.copy(SchemaFactory.get($state.current.name));
@@ -166,10 +173,11 @@ angular.module('cgForm.surveyForm', ['cgForm.formElement', 'cgForm.formConfig', 
                 /* Initialize form data */
                 scope.data = {};
 
+
                 /* Merge schema with default config */
                 scope.schema = _.extend(scope.schema, FormConfig);
 
-                /* Load lookup data and Cross Flow dynamic validation */
+                /* Load lookup data and Cross Check dynamic validation */
                 angular.forEach(scope.schema.properties, function (elem) {
                     if (elem.type === 'lookup') {
                         FormService.getLookupData(elem.lookup).then(function (resp) {
@@ -214,18 +222,16 @@ angular.module('cgForm.surveyForm', ['cgForm.formElement', 'cgForm.formConfig', 
                 $q.all(crossFlowPromises).then(function (responses) {
 
                     angular.forEach(responses, function (resp) {
-                        if (resp.data.check === false) {
+                        if (resp.data.check === false)
                             scope.schema.properties[indexes[elemIndex]].crossFlowCheck = false;
-                            //scope.schema.properties.splice(indexes[elemIndex],1);
-                        }
+
                         elemIndex++;
 
                     });
                     scope.schema.properties = _.remove(scope.schema.properties, function (element) {
-                        if (angular.isUndefined(element.crossFlowCheck)) {
-                            return true;
 
-                        }
+                        if (angular.isUndefined(element.crossFlowCheck))
+                            return true;
 
                         return element.crossFlowCheck !== false;
                     });
@@ -240,13 +246,13 @@ angular.module('cgForm.surveyForm', ['cgForm.formElement', 'cgForm.formConfig', 
                 /* Evaluate values in hidden fields */
                 angular.forEach(scope.schema.properties, function (elem) {
 
-                    if (elem.name !== 'datastore' && elem.type === 'hidden') {
+                    if (elem.name !== 'datastore' && elem.type === 'hidden')
                         elem.value = $rootScope.$eval(elem.value);
 
-                    }
-                    if (elem.type === 'hidden') {
+
+                    if (elem.type === 'hidden')
                         scope.data[elem.name] = elem.value;
-                    }
+
 
                 });
 
@@ -263,13 +269,17 @@ angular.module('cgForm.surveyForm', ['cgForm.formElement', 'cgForm.formConfig', 
                     name: 'datastore'
                 }).value;
 
+                /* Get form data if already populated */
+                FormService.getResource(scope.datastore).then(function (resp) {
+                    delete resp.data.timelog;
+                    delete resp.data.endtime;
+                    angular.extend(scope.data, resp.data);
+                });
 
                 /* Bind Enter as Tab and Validation to form */
                 element.bValidator();
 
-                scope.flow = {
-                    properties: []
-                };
+                scope.flow = { properties: [] };
 
                 //Render All hidden elements
                 var hiddenCount = -1; //count all hidden elements
@@ -284,9 +294,9 @@ angular.module('cgForm.surveyForm', ['cgForm.formElement', 'cgForm.formConfig', 
                         scope.flowIndex++;
 
                     }
-                    else {
+                    else
                         break;
-                    }
+
 
                 }
 

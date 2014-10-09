@@ -1,6 +1,7 @@
-describe('form element', function() {
+describe('form element', function () {
     var scope, $compile;
-    var element, user, age, sampleData, templateCache, state;
+    var element, user, age, sampleData, templateCache, state, httpBackend, location;
+    var currentLocation = '/ffq_bev/1/basicInf';
     var fakeServer = 'http://fakeServer/';
     var controls = [
         'checkbox',
@@ -19,19 +20,19 @@ describe('form element', function() {
         'text',
         'textarea'
     ];
-    angular.forEach(controls, function(control) {
+    angular.forEach(controls, function (control) {
         beforeEach(module('template/formElement/' + control + '.html'));
 
     });
-    angular.forEach(controls, function(control) {
+    angular.forEach(controls, function (control) {
         beforeEach(module('template/ffqForm/ffqForm.html'));
 
     });
     beforeEach(angular.mock.module('cgForm.schemaFactory'));
-    beforeEach(module(function($provide) {
+    beforeEach(module(function ($provide) {
 
         var mockFactory = {
-            get: function(name) {
+            get: function (name) {
                 if (name === 'ffqDetail.bev') {
                     return sampleData;
                 }
@@ -45,106 +46,139 @@ describe('form element', function() {
     beforeEach(module('cgForm.ffqForm'));
 
 
-    beforeEach(inject(function($rootScope, _$compile_, _$templateCache_, _$state_) {
+    beforeEach(inject(function ($rootScope, _$compile_, _$templateCache_, _$state_, _$httpBackend_, _$location_) {
 
         scope = $rootScope;
+        location = _$location_;
+        location.url(currentLocation)
+        httpBackend = _$httpBackend_;
         $compile = _$compile_;
         templateCache = _$templateCache_;
         state = _$state_;
         sampleData = {
             'onSave': '$state.transitionTo("hc.ffqDetail.cls", $stateParams);',
-            'properties': [{
-                'id': 'datastore',
-                'name': 'datastore',
-                'value': 'ffq_bev',
-                'type': 'hidden'
-            }, {
-                'id': 'member_id',
-                'name': 'member_id',
-                'value': '$stateParams.memberId',
-                'type': 'hidden'
-            }, {
-                'items': [{
-                    'text': '',
-                    'value': '0'
-                }, {
-                    'text': '',
-                    'value': '1'
-                }, {
-                    'text': '',
-                    'value': '2'
-                }, {
-                    'text': '',
-                    'value': '3'
-                }, {
-                    'text': '',
-                    'value': '4'
-                }, {
-                    'text': '',
-                    'value': '5'
-                }, {
-                    'text': '',
-                    'value': '6'
-                }],
-                'name': 'milk_cow',
-                'label': 'Milk (Cow)',
-                'type': 'ffq',
-                'valdn': 'required'
-            }, {
-                'items': [{
-                    'text': '',
-                    'value': '0'
-                }, {
-                    'text': '',
-                    'value': '1'
-                }, {
-                    'text': '',
-                    'value': '2'
-                }, {
-                    'text': '',
-                    'value': '3'
-                }, {
-                    'text': '',
-                    'value': '4'
-                }, {
-                    'text': '',
-                    'value': '5'
-                }, {
-                    'text': '',
-                    'value': '6'
-                }],
-                'name': 'milk_buffalo',
-                'label': 'Milk (Buffalo)',
-                'type': 'ffq',
-                'valdn': ''
-            }, {
-                'items': [{
-                    'text': '',
-                    'value': '0'
-                }, {
-                    'text': '',
-                    'value': '1'
-                }, {
-                    'text': '',
-                    'value': '2'
-                }, {
-                    'text': '',
-                    'value': '3'
-                }, {
-                    'text': '',
-                    'value': '4'
-                }, {
-                    'text': '',
-                    'value': '5'
-                }, {
-                    'text': '',
-                    'value': '6'
-                }],
-                'name': 'tea',
-                'label': 'Tea',
-                'type': 'ffq',
-                'valdn': ''
-            }]
+            'properties': [
+                {
+                    'id': 'datastore',
+                    'name': 'datastore',
+                    'value': 'ffq_bev',
+                    'type': 'hidden'
+                },
+                {
+                    'id': 'member_id',
+                    'name': 'member_id',
+                    'value': '$stateParams.memberId',
+                    'type': 'hidden'
+                },
+                {
+                    'items': [
+                        {
+                            'text': '',
+                            'value': '0'
+                        },
+                        {
+                            'text': '',
+                            'value': '1'
+                        },
+                        {
+                            'text': '',
+                            'value': '2'
+                        },
+                        {
+                            'text': '',
+                            'value': '3'
+                        },
+                        {
+                            'text': '',
+                            'value': '4'
+                        },
+                        {
+                            'text': '',
+                            'value': '5'
+                        },
+                        {
+                            'text': '',
+                            'value': '6'
+                        }
+                    ],
+                    'name': 'milk_cow',
+                    'label': 'Milk (Cow)',
+                    'type': 'ffq',
+                    'valdn': 'required'
+                },
+                {
+                    'items': [
+                        {
+                            'text': '',
+                            'value': '0'
+                        },
+                        {
+                            'text': '',
+                            'value': '1'
+                        },
+                        {
+                            'text': '',
+                            'value': '2'
+                        },
+                        {
+                            'text': '',
+                            'value': '3'
+                        },
+                        {
+                            'text': '',
+                            'value': '4'
+                        },
+                        {
+                            'text': '',
+                            'value': '5'
+                        },
+                        {
+                            'text': '',
+                            'value': '6'
+                        }
+                    ],
+                    'name': 'milk_buffalo',
+                    'label': 'Milk (Buffalo)',
+                    'type': 'ffq',
+                    'valdn': ''
+                },
+                {
+                    'items': [
+                        {
+                            'text': '',
+                            'value': '0'
+                        },
+                        {
+                            'text': '',
+                            'value': '1'
+                        },
+                        {
+                            'text': '',
+                            'value': '2'
+                        },
+                        {
+                            'text': '',
+                            'value': '3'
+                        },
+                        {
+                            'text': '',
+                            'value': '4'
+                        },
+                        {
+                            'text': '',
+                            'value': '5'
+                        },
+                        {
+                            'text': '',
+                            'value': '6'
+                        }
+                    ],
+                    'name': 'tea',
+                    'label': 'Tea',
+                    'type': 'ffq',
+                    'valdn': ''
+                }
+            ]
         };
 
 
@@ -159,10 +193,12 @@ describe('form element', function() {
     }
 
 
-    it('should render all form controls with local config', function() {
+    it('should render all form controls with local config', function () {
+
+        var mockResp = {id: 1, username: 'user1', roles: 'user'};
+        httpBackend.whenGET('api/data/dataAccessService/ffq_bev/1').respond(mockResp);
 
         scope.serviceBaseUrl = fakeServer;
-
         scope.data = sampleData;
         element = angular.element('<ffq-form options="data"></ffq-form>');
         compileDigest(scope, element);
@@ -172,9 +208,12 @@ describe('form element', function() {
         expect(element.find('input:text').length).toBe(3);
     });
 
-    it('should render all form controls with config for a given state', function() {
+    it('should render all form controls with config for a given state', function () {
 
         scope.serviceBaseUrl = fakeServer;
+        var mockResp = {id: 1, username: 'user1', roles: 'user'};
+        httpBackend.whenGET('api/data/dataAccessService/ffq_bev/1').respond(mockResp);
+
         state.current = {
             name: 'ffqDetail.bev'
         };

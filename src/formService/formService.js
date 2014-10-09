@@ -12,8 +12,9 @@ angular.module('cgForm.formService', ['cgForm.formConfig', 'cgForm.lodash', 'ui.
         }
 
         function getResource(entity) {
+
             var params = $location.url().split('/')
-            var entityId = _.last(params)
+            var entityId = params[params.length - 2]
             var dataUrl = FormConfig.resourceBaseUrl + entity + '/' + entityId
 
             return getData(dataUrl)
