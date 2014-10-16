@@ -1,5 +1,5 @@
 angular.module('cgForm.tableForm', ['cgForm.formElement', 'cgForm.formConfig', 'cgForm.formService' , 'cgForm.lodash', 'cgForm.schemaFactory', 'ui.router', 'cgForm.joelpurra', 'cgForm.timelog', 'cgForm.schemaResolver'])
-    .controller('tableFormCtrl', function ($scope, $element, $state, $stateParams,FormService) {
+    .controller('tableFormCtrl', function ($scope, $element, $state, $stateParams, FormService) {
 
         $scope.onSubmit = function (data) {
 
@@ -8,8 +8,7 @@ angular.module('cgForm.tableForm', ['cgForm.formElement', 'cgForm.formConfig', '
                 postData(data)
 
         };
-        $scope.alcoholFreqFocus= function (data) {
-
+        $scope.alcoholFreqFocus = function (data) {
 
 
         }
@@ -66,6 +65,13 @@ angular.module('cgForm.tableForm', ['cgForm.formElement', 'cgForm.formConfig', '
 
             /* Remove hidden items from schema */
             _.remove(scope.schema.properties, {type: 'hidden'});
+
+            /* Get form data if already populated */
+            FormService.getResource(scope.data.datastore).then(function (resp) {
+                delete resp.data.timelog;
+                delete resp.data.endtime;
+                angular.extend(scope.data, resp.data);
+            });
 
 
             /* Bind Enter as Tab and Validation to form */
